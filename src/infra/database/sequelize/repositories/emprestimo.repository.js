@@ -7,7 +7,7 @@ class EmprestimoSequelizeRepository {
     return this.EmprestimoSequelizeModel.findByPk(id, { raw: true });
   }
 
-  findAll({ filters, pagination }) {
+  findAll({ filters = {} }) {
     const where = {};
 
     filters.usuarioId && (where.usuarioId = filters.usuarioId); // eslint-disable-line

@@ -6,7 +6,6 @@ function loadModels(sequelize, Sequelize) {
     .filter((file) => (file.indexOf('.') !== 0) && (/\.model\.js$/.test(file)))
     .map((file) => {
       const model = require(path.join(__dirname, file)); /* eslint-disable-line */
-      // console.log(model.init(sequelize, Sequelize.DataTypes).tableName);
       return {
         [model.name]: model.init(sequelize, Sequelize.DataTypes),
       };
