@@ -1,10 +1,10 @@
 const { Router } = require('express');
 const HttpStatus = require('http-status');
 
-class UsuarioHttpController {
-  constructor({ UsuarioSequelizeRepository, logger }) {
-    this.BASE_PATH = '/usuarios';
-    this.UsuarioSequelizeRepository = UsuarioSequelizeRepository;
+class LivroHttpController {
+  constructor({ LivroSequelizeRepository, logger }) {
+    this.BASE_PATH = '/livros';
+    this.LivroSequelizeRepository = LivroSequelizeRepository;
     this.logger = logger;
   }
 
@@ -18,13 +18,13 @@ class UsuarioHttpController {
   }
 
   async create(req, res) {
-    const userToCreate = req.body;
+    const livroToCreate = req.body;
 
     try {
-      const newUser = await this.UsuarioSequelizeRepository.create(userToCreate);
+      const newLivro = await this.LivroSequelizeRepository.create(livroToCreate);
       return res
         .status(HttpStatus.OK)
-        .json(newUser);
+        .json(newLivro);
     } catch (error) {
       this.logger.debug(error);
       return res
@@ -40,12 +40,12 @@ class UsuarioHttpController {
 
   async findAll(req, res) {
     try {
-      const usuarios = await this.UsuarioSequelizeRepository.findAll();
+      const livros = await this.LivroSequelizeRepository.findAll();
       return res
         .status(HttpStatus.OK)
         .json({
           status: HttpStatus.OK,
-          data: usuarios,
+          data: livros,
         });
     } catch (error) {
       this.logger.debug(error);
@@ -62,12 +62,12 @@ class UsuarioHttpController {
 
   async get(req, res) {
     try {
-      const usuario = await this.UsuarioSequelizeRepository.findById(req.params.id);
+      const livro = await this.LivroSequelizeRepository.findById(req.params.id);
       return res
         .status(HttpStatus.OK)
         .json({
           status: HttpStatus.OK,
-          data: usuario,
+          data: livro,
         });
     } catch (error) {
       this.logger.debug(error);
@@ -84,7 +84,7 @@ class UsuarioHttpController {
 
   async remove(req, res) {
     try {
-      const deleted = await this.UsuarioSequelizeRepository.remove(req.params.id);
+      const deleted = await this.LivroSequelizeRepository.remove(req.params.id);
       return res
         .status(HttpStatus.OK)
         .json({
@@ -105,13 +105,13 @@ class UsuarioHttpController {
   }
 
   async update(req, res) {
-    const usuarioToUpdate = req.body;
+    const livroToUpdate = req.body;
 
     try {
-      const updatedUsuario = await this.UsuarioSequelizeRepository.update(usuarioToUpdate);
+      const updatedLivro = await this.LivroSequelizeRepository.update(livroToUpdate);
       return res
         .status(HttpStatus.OK)
-        .json(updatedUsuario);
+        .json(updatedLivro);
     } catch (error) {
       this.logger.debug(error);
       return res
@@ -126,4 +126,4 @@ class UsuarioHttpController {
   }
 }
 
-module.exports = UsuarioHttpController;
+module.exports = LivroHttpController;

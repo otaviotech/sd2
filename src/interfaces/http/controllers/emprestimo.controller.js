@@ -1,10 +1,10 @@
 const { Router } = require('express');
 const HttpStatus = require('http-status');
 
-class UsuarioHttpController {
-  constructor({ UsuarioSequelizeRepository, logger }) {
-    this.BASE_PATH = '/usuarios';
-    this.UsuarioSequelizeRepository = UsuarioSequelizeRepository;
+class EmprestimoHttpController {
+  constructor({ EmprestimoSequelizeRepository, logger }) {
+    this.BASE_PATH = '/emprestimos';
+    this.EmprestimoSequelizeRepository = EmprestimoSequelizeRepository;
     this.logger = logger;
   }
 
@@ -18,13 +18,13 @@ class UsuarioHttpController {
   }
 
   async create(req, res) {
-    const userToCreate = req.body;
+    const emprestimoToCreate = req.body;
 
     try {
-      const newUser = await this.UsuarioSequelizeRepository.create(userToCreate);
+      const newEmprestimo = await this.EmprestimoSequelizeRepository.create(emprestimoToCreate);
       return res
         .status(HttpStatus.OK)
-        .json(newUser);
+        .json(newEmprestimo);
     } catch (error) {
       this.logger.debug(error);
       return res
@@ -40,12 +40,12 @@ class UsuarioHttpController {
 
   async findAll(req, res) {
     try {
-      const usuarios = await this.UsuarioSequelizeRepository.findAll();
+      const emprestimos = await this.EmprestimoSequelizeRepository.findAll();
       return res
         .status(HttpStatus.OK)
         .json({
           status: HttpStatus.OK,
-          data: usuarios,
+          data: emprestimos,
         });
     } catch (error) {
       this.logger.debug(error);
@@ -62,12 +62,12 @@ class UsuarioHttpController {
 
   async get(req, res) {
     try {
-      const usuario = await this.UsuarioSequelizeRepository.findById(req.params.id);
+      const emprestimo = await this.EmprestimoSequelizeRepository.findById(req.params.id);
       return res
         .status(HttpStatus.OK)
         .json({
           status: HttpStatus.OK,
-          data: usuario,
+          data: emprestimo,
         });
     } catch (error) {
       this.logger.debug(error);
@@ -84,7 +84,7 @@ class UsuarioHttpController {
 
   async remove(req, res) {
     try {
-      const deleted = await this.UsuarioSequelizeRepository.remove(req.params.id);
+      const deleted = await this.EmprestimoSequelizeRepository.remove(req.params.id);
       return res
         .status(HttpStatus.OK)
         .json({
@@ -105,13 +105,13 @@ class UsuarioHttpController {
   }
 
   async update(req, res) {
-    const usuarioToUpdate = req.body;
+    const emprestimoToUpdate = req.body;
 
     try {
-      const updatedUsuario = await this.UsuarioSequelizeRepository.update(usuarioToUpdate);
+      const updatedEmprestimo = await this.EmprestimoSequelizeRepository.update(emprestimoToUpdate);
       return res
         .status(HttpStatus.OK)
-        .json(updatedUsuario);
+        .json(updatedEmprestimo);
     } catch (error) {
       this.logger.debug(error);
       return res
@@ -126,4 +126,4 @@ class UsuarioHttpController {
   }
 }
 
-module.exports = UsuarioHttpController;
+module.exports = EmprestimoHttpController;

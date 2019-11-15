@@ -7,7 +7,8 @@
     "dev": "nodemon src/index.js",
     "sequelize": "sequelize-cli",
     "lint": "eslint ./",
-    "lint:fix": "eslint ./ --fix"
+    "lint:fix": "eslint ./ --fix",
+    "test": "NODE_ENV=test mocha --opts test/mocha.opts.unit"
   },
   "dependencies": {
     "awilix": "^4.2.2",
@@ -34,7 +35,8 @@
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
-    "mocha": "^6.2.1",
+    "eslint-plugin-mocha": "^6.2.1",
+    "mocha": "^6.2.2",
     "nodemon": "^1.19.3"
   }
 }

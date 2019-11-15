@@ -5,7 +5,7 @@ class Livro extends Sequelize.Model {
   static init(sequelize, DataTypes) {
     return super.init({
       titulo: { type: DataTypes.STRING },
-      quantidade: { type: DataTypes.NUMBER },
+      quantidade: { type: DataTypes.INTEGER },
       foto: { type: DataTypes.STRING },
       ...defaults.columns,
     }, {

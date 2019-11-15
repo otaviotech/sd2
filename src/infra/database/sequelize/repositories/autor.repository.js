@@ -23,6 +23,11 @@ class AutorSequelizeRepository {
 
   async create(autor) {
     const dbAutor = await this.AutorSequelizeModel.create(autor);
+
+    if (autor.livros) {
+      const livros = autor.livros.map((livro) => (typeof livro === 'number' ? livro : livro.id));
+      await dbAutor.addLivros(livros);
+    }
     return dbAutor.dataValues;
   }
 
@@ -36,6 +41,11 @@ class AutorSequelizeRepository {
     const dbAutor = await this.AutorSequelizeModel.findByPk(autor.id);
 
     autor.nome && (dbAutor.nome = autor.nome); // eslint-disable-line
+
+    if (autor.livros) {
+      const livrosIds = autor.livros.map((livro) => (typeof livro === 'number' ? livro : livro.id));
+      dbAutor.setLivros(livrosIds);
+    }
 
     await dbAutor.save();
 

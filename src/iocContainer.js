@@ -18,6 +18,9 @@ const container = awilix.createContainer({
 });
 
 container.register({
+  sequelizeConnection: awilix.asValue(appSequelize.sequelize, {
+    lifetime: awilix.Lifetime.SINGLETON,
+  }),
   SequelizeModels: awilix.asValue(appSequelize.models, {
     lifetime: awilix.Lifetime.SINGLETON,
   }),

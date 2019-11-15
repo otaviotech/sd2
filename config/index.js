@@ -1,13 +1,22 @@
 require('dotenv').config();
+const fs = require('fs');
 const path = require('path');
-const db = require('./config.json');
+
+function loadDbConfig() {
+  if (process.env.DATABASE_URL) {
+    return process.env.DATABASE_URL;
+  }
+
+  return require('./config.json')[ENV]; // eslint-disable-line
+}
 
 const ENV = process.env.NODE_ENV || 'development';
+const dbConfig = loadDbConfig();
 
 const config = {
   [ENV]: true,
   env: ENV,
-  db,
+  db: dbConfig,
 
   port: process.env.port || 3000,
   host: process.env.host || '0.0.0.0',
