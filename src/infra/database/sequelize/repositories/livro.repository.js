@@ -1,28 +1,42 @@
 class LivroSequelizeRepository {
-  constructor({ LivroSequelizeModel }) {
+  constructor({ LivroSequelizeModel, ParseSequelizeIncludes }) {
     this.LivroSequelizeModel = LivroSequelizeModel;
+    this.ParseSequelizeIncludes = ParseSequelizeIncludes;
   }
 
   findById(id) {
     return this.LivroSequelizeModel.findByPk(id, { raw: true });
   }
 
-  findAll() {
-    return this.LivroSequelizeModel.findAll({ raw: true });
+  findAll({ filters = {}, includes = [], pagination } = {}) {
+    const include = this.ParseSequelizeIncludes(includes);
+
+    const where = {};
+
+    Object.keys(filters).forEach((f) => { where[f] = filters[f]; });
+
+    return this.LivroSequelizeModel.findAll({
+      include,
+      where,
+    });
   }
 
   async create(livro) {
     const dbLivro = await this.LivroSequelizeModel.create(livro);
 
     if (livro.autores && livro.autores.length) {
-      const autores = livro.autores.map((autor) => autor.id);
+      const autores = livro.autores.map((autor) => (typeof autor === 'number' ? autor : autor.id));
       await dbLivro.addAutores(autores);
     }
 
     return dbLivro.dataValues;
   }
 
-  remove(id) {
+  remove(mixed) {
+    const id = (typeof mixed === 'number')
+      ? mixed
+      : mixed.id;
+
     return this.LivroSequelizeModel.destroy({
       where: { id },
     });
@@ -36,7 +50,7 @@ class LivroSequelizeRepository {
     typeof livro.quantidade === 'number' && (dbLivro.quantidade = livro.quantidade); // eslint-disable-line
 
     if (livro.autores && livro.autores.length) {
-      const autores = livro.autores.map((autor) => autor.id);
+      const autores = livro.autores.map((autor) => (typeof autor === 'number' ? autor : autor.id));
       await dbLivro.setAutores(autores);
     }
 

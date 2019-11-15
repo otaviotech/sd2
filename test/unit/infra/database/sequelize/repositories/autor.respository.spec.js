@@ -13,7 +13,7 @@ describe('Infra :: Database :: Sequelize :: Repositories :: AutorSequelizeReposi
     });
   });
 
-  describe('#findAll', () => {
+  describe('.findAll', () => {
     beforeEach(() => AutorSequelizeModel.bulkCreate([
       { nome: 'Autor 1' },
       { nome: 'Autor 2' },
@@ -32,7 +32,54 @@ describe('Infra :: Database :: Sequelize :: Repositories :: AutorSequelizeReposi
     });
   });
 
-  describe('#create', () => {
+  describe('.findAll({ nome: \'Autor 1\'})', () => {
+    beforeEach(() => AutorSequelizeModel.bulkCreate([
+      { nome: 'Autor 1' },
+      { nome: 'Autor 2' },
+    ]));
+
+    it('Deve retornar apenas os autores que batem com os parâmetros passados', async () => {
+      const autores = await repository.findAll({ filters: { nome: 'Autor 1' } });
+
+      expect(autores).to.have.lengthOf(1);
+      expect(autores[0]).to.be.instanceOf(AutorSequelizeModel);
+      expect(autores[0].nome).to.equal('Autor 1');
+    });
+  });
+
+  describe('.findAll({ id: 1 })', () => {
+    beforeEach(() => AutorSequelizeModel.bulkCreate([
+      { nome: 'Autor 1' },
+      { nome: 'Autor 2' },
+    ]));
+
+    it('Deve retornar apenas os autores que batem com os parâmetros passados', async () => {
+      const autores = await repository.findAll({ filters: { id: 1 } });
+
+      expect(autores).to.have.lengthOf(1);
+      expect(autores[0]).to.be.instanceOf(AutorSequelizeModel);
+      expect(autores[0].nome).to.equal('Autor 1');
+      expect(autores[0].id).to.equal(1);
+    });
+  });
+
+  describe('.findAll({ id: 1, nome: \'Autor 1\' })', () => {
+    beforeEach(() => AutorSequelizeModel.bulkCreate([
+      { nome: 'Autor 1' },
+      { nome: 'Autor 2' },
+    ]));
+
+    it('Deve retornar apenas os autores que batem com os parâmetros passados', async () => {
+      const autores = await repository.findAll({ filters: { id: 1, nome: 'Autor 1' } });
+
+      expect(autores).to.have.lengthOf(1);
+      expect(autores[0]).to.be.instanceOf(AutorSequelizeModel);
+      expect(autores[0].nome).to.equal('Autor 1');
+      expect(autores[0].id).to.equal(1);
+    });
+  });
+
+  describe('.create', () => {
     beforeEach(() => Promise.all([
       models.Livro.bulkCreate([
         { titulo: 'Livro 1' },
@@ -78,8 +125,18 @@ describe('Infra :: Database :: Sequelize :: Repositories :: AutorSequelizeReposi
       expect(autores[1].livros).to.have.lengthOf(1);
       expect(autores[1].livros[0].titulo).to.equal('Livro 2');
     });
+  });
 
-    it('Deve atualizar autores no banco', async () => {
+  describe('.update', () => {
+    beforeEach(() => Promise.all([
+      models.Livro.bulkCreate([
+        { titulo: 'Livro 1' },
+        { titulo: 'Livro 2' },
+        { titulo: 'Livro 3' },
+      ]),
+    ]));
+
+    it('Deve atualizar autores no banco, incluindo seus livros', async () => {
       await Promise.all([
         await repository.create({ nome: 'Autor 1', livros: [1] }),
         await repository.create({ nome: 'Autor 2', livros: [{ id: 2 }] }),
@@ -127,7 +184,7 @@ describe('Infra :: Database :: Sequelize :: Repositories :: AutorSequelizeReposi
     });
   });
 
-  describe('#remove', () => {
+  describe('.remove(1)', () => {
     beforeEach(() => AutorSequelizeModel.bulkCreate([
       { nome: 'Autor 1' },
       { nome: 'Autor 2' },
@@ -135,6 +192,24 @@ describe('Infra :: Database :: Sequelize :: Repositories :: AutorSequelizeReposi
 
     it('Deve excluir autores do banco', async () => {
       await repository.remove(1);
+
+      const autores = await AutorSequelizeModel.findAll();
+
+      expect(autores).to.have.lengthOf(1);
+
+      expect(autores[0]).to.be.instanceOf(AutorSequelizeModel);
+      expect(autores[0].nome).to.equal('Autor 2');
+    });
+  });
+
+  describe('.remove({ id: 1 })', () => {
+    beforeEach(() => AutorSequelizeModel.bulkCreate([
+      { nome: 'Autor 1' },
+      { nome: 'Autor 2' },
+    ]));
+
+    it('Deve excluir autores do banco', async () => {
+      await repository.remove({ id: 1 });
 
       const autores = await AutorSequelizeModel.findAll();
 

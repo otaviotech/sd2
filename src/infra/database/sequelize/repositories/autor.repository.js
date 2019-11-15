@@ -31,7 +31,11 @@ class AutorSequelizeRepository {
     return dbAutor.dataValues;
   }
 
-  remove(id) {
+  remove(mixed = {}) {
+    const id = (typeof mixed === 'number')
+      ? mixed
+      : mixed.id;
+
     return this.AutorSequelizeModel.destroy({
       where: { id },
     });
