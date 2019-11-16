@@ -13,6 +13,7 @@ class UsuarioHttpController {
     router.get('/', this.findAll.bind(this));
     router.get('/:id', this.remove.bind(this));
     router.post('/', this.create.bind(this));
+    router.put('/:id', this.update.bind(this));
     router.delete('/:id', this.remove.bind(this));
     return router;
   }
@@ -40,7 +41,10 @@ class UsuarioHttpController {
 
   async findAll(req, res) {
     try {
-      const usuarios = await this.UsuarioSequelizeRepository.findAll();
+      const usuarios = await this.UsuarioSequelizeRepository.findAll({
+        filters: req.query,
+        includes: ['emprestimos.livros'],
+      });
       return res
         .status(HttpStatus.OK)
         .json({
@@ -84,7 +88,7 @@ class UsuarioHttpController {
 
   async remove(req, res) {
     try {
-      const deleted = await this.UsuarioSequelizeRepository.remove(req.params.id);
+      const deleted = await this.UsuarioSequelizeRepository.remove(Number(req.params.id));
       return res
         .status(HttpStatus.OK)
         .json({

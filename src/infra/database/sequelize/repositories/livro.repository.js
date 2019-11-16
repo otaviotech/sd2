@@ -13,7 +13,16 @@ class LivroSequelizeRepository {
 
     const where = {};
 
-    Object.keys(filters).forEach((f) => { where[f] = filters[f]; });
+    Object.keys(filters).forEach((f) => { where[f] = Number(filters[f]) || filters[f]; });
+
+    if (filters.autorId) {
+      include.push({
+        model: this.LivroSequelizeModel.sequelize.models.autor,
+        where: { id: filters.autorId },
+      });
+
+      delete where.autorId;
+    }
 
     return this.LivroSequelizeModel.findAll({
       include,

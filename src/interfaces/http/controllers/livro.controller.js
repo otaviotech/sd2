@@ -13,6 +13,7 @@ class LivroHttpController {
     router.get('/', this.findAll.bind(this));
     router.get('/:id', this.remove.bind(this));
     router.post('/', this.create.bind(this));
+    router.put('/:id', this.update.bind(this));
     router.delete('/:id', this.remove.bind(this));
     return router;
   }
@@ -40,7 +41,9 @@ class LivroHttpController {
 
   async findAll(req, res) {
     try {
-      const livros = await this.LivroSequelizeRepository.findAll();
+      const livros = await this.LivroSequelizeRepository.findAll({
+        filters: req.query,
+      });
       return res
         .status(HttpStatus.OK)
         .json({
@@ -62,7 +65,7 @@ class LivroHttpController {
 
   async get(req, res) {
     try {
-      const livro = await this.LivroSequelizeRepository.findById(req.params.id);
+      const livro = await this.LivroSequelizeRepository.findById(Number(req.params.id));
       return res
         .status(HttpStatus.OK)
         .json({
@@ -84,7 +87,7 @@ class LivroHttpController {
 
   async remove(req, res) {
     try {
-      const deleted = await this.LivroSequelizeRepository.remove(req.params.id);
+      const deleted = await this.LivroSequelizeRepository.remove(Number(req.params.id));
       return res
         .status(HttpStatus.OK)
         .json({

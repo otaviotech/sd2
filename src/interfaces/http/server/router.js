@@ -2,7 +2,11 @@ const { Router } = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const container = require('../../../iocContainer');
+const jwt = require('jsonwebtoken');
+const expressJwt = require('express-jwt');
+const unless = require('express-unless');
+// const container = require('../../../iocContainer');
+
 
 module.exports = ({
   config,
@@ -11,6 +15,8 @@ module.exports = ({
   // swaggerMiddleware,
   HttpControllers,
 }) => {
+  const jwtMiddleware = expressJwt({ secret: process.env.JWT_SECRET });
+
   const router = Router();
 
   /* istanbul ignore if */
@@ -24,9 +30,8 @@ module.exports = ({
     .use(cors())
     .use(bodyParser.json())
     .use(containerMiddleware);
-  // .use('/docs', swaggerMiddleware);
 
-  // console.log(HttpControllers);
+  apiRouter.use(jwtMiddleware.unless({ path: ['/api/auth/login'] }));
 
   Object.keys(HttpControllers)
     .forEach((controllerName) => {

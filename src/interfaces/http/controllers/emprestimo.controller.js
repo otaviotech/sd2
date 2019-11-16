@@ -13,6 +13,7 @@ class EmprestimoHttpController {
     router.get('/', this.findAll.bind(this));
     router.get('/:id', this.remove.bind(this));
     router.post('/', this.create.bind(this));
+    router.put('/:id', this.update.bind(this));
     router.delete('/:id', this.remove.bind(this));
     return router;
   }
@@ -40,7 +41,10 @@ class EmprestimoHttpController {
 
   async findAll(req, res) {
     try {
-      const emprestimos = await this.EmprestimoSequelizeRepository.findAll();
+      const emprestimos = await this.EmprestimoSequelizeRepository.findAll({
+        filters: req.query,
+        includes: ['livros'],
+      });
       return res
         .status(HttpStatus.OK)
         .json({

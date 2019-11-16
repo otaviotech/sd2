@@ -1,0 +1,8 @@
+language: node_js
+node_js: node
+services: postgresql
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
+  - psql -c "ALTER USER postgress WITH PASSWORD 'postgres';" -U postgres
+  - yarn run test:db:create
+after_success: npm run coveralls

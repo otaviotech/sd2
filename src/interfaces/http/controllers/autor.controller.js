@@ -13,6 +13,7 @@ class AutorHttpController {
     router.get('/', this.findAll.bind(this));
     router.get('/:id', this.remove.bind(this));
     router.post('/', this.create.bind(this));
+    router.put('/:id', this.update.bind(this));
     router.delete('/:id', this.remove.bind(this));
     return router;
   }
@@ -40,7 +41,7 @@ class AutorHttpController {
 
   async findAll(req, res) {
     try {
-      const autores = await this.AutorSequelizeRepository.findAll();
+      const autores = await this.AutorSequelizeRepository.findAll({ filters: req.query, includes: ['livros'] });
       return res
         .status(HttpStatus.OK)
         .json({

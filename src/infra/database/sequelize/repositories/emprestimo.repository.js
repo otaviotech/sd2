@@ -24,7 +24,7 @@ class EmprestimoSequelizeRepository {
   async create(emprestimo) {
     const dbEmprestimo = await this.EmprestimoSequelizeModel.create(emprestimo);
 
-    if (emprestimo.livros && emprestimo.livros.length) {
+    if (emprestimo.livros) {
       const livros = emprestimo.livros.map((livro) => (typeof livro === 'number' ? livro : livro.id));
       await dbEmprestimo.addLivros(livros);
     }

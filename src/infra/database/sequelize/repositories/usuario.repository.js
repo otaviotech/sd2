@@ -8,14 +8,14 @@ class UsuarioSequelizeRepository {
     return this.UsuarioSequelizeModel.findByPk(id, { raw: true });
   }
 
-  findAll({ filters = {}, includes = [], pagination } = {}) {
+  async findAll({ filters = {}, includes = [], pagination } = {}) {
     const include = this.ParseSequelizeIncludes(includes);
 
     const where = {};
 
     Object.keys(filters).forEach((f) => { where[f] = filters[f]; });
 
-    const usuarios = this.UsuarioSequelizeModel.findAll({
+    const usuarios = await this.UsuarioSequelizeModel.findAll({
       include,
       where,
     });
