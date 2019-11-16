@@ -1,20 +1,23 @@
 class EmprestimoSequelizeRepository {
-  constructor({ EmprestimoSequelizeModel }) {
+  constructor({ EmprestimoSequelizeModel, ParseSequelizeIncludes }) {
     this.EmprestimoSequelizeModel = EmprestimoSequelizeModel;
+    this.ParseSequelizeIncludes = ParseSequelizeIncludes;
   }
 
   findById(id) {
     return this.EmprestimoSequelizeModel.findByPk(id, { raw: true });
   }
 
-  findAll({ filters = {} }) {
+  findAll({ filters = {}, includes = [] } = {}) {
+    const include = this.ParseSequelizeIncludes(includes);
+
     const where = {};
 
-    filters.usuarioId && (where.usuarioId = filters.usuarioId); // eslint-disable-line
+    Object.keys(filters).forEach((f) => { where[f] = filters[f]; });
 
     return this.EmprestimoSequelizeModel.findAll({
       where,
-      raw: true,
+      include,
     });
   }
 
@@ -22,14 +25,18 @@ class EmprestimoSequelizeRepository {
     const dbEmprestimo = await this.EmprestimoSequelizeModel.create(emprestimo);
 
     if (emprestimo.livros && emprestimo.livros.length) {
-      const livros = emprestimo.livros.map((autor) => autor.id);
+      const livros = emprestimo.livros.map((livro) => (typeof livro === 'number' ? livro : livro.id));
       await dbEmprestimo.addLivros(livros);
     }
 
     return dbEmprestimo.dataValues;
   }
 
-  remove(id) {
+  remove(mixed) {
+    const id = (typeof mixed === 'number')
+      ? mixed
+      : mixed.id;
+
     return this.EmprestimoSequelizeModel.destroy({
       where: { id },
     });
@@ -43,9 +50,9 @@ class EmprestimoSequelizeRepository {
     emprestimo.dataFim && (dbEmprestimo.dataFim = emprestimo.dataFim); // eslint-disable-line
     emprestimo.dataDevolucao && (dbEmprestimo.dataDevolucao = emprestimo.dataDevolucao); // eslint-disable-line
 
-    if (emprestimo.livros && emprestimo.livros.length) {
-      const livros = emprestimo.livros.map((autor) => autor.id);
-      await dbEmprestimo.addLivros(livros);
+    if (emprestimo.livros) {
+      const livros = emprestimo.livros.map((livro) => (typeof livro === 'number' ? livro : livro.id));
+      await dbEmprestimo.setLivros(livros);
     }
 
     await dbEmprestimo.save();

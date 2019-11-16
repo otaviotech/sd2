@@ -28,7 +28,11 @@ class UsuarioSequelizeRepository {
     return dbUsuario.dataValues;
   }
 
-  remove(id) {
+  remove(mixed = {}) {
+    const id = (typeof mixed === 'number')
+      ? mixed
+      : mixed.id;
+
     return this.UsuarioSequelizeModel.destroy({
       where: { id },
     });
