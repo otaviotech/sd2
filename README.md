@@ -1,6 +1,6 @@
 # sd2
 
-[![Coverage Status](https://coveralls.io/repos/github/otaviotech/sd2/badge.svg?branch=master)](https://coveralls.io/github/otaviotech/sd2?branch=master)
+[![Build Status](https://travis-ci.org/otaviotech/sd2.svg?branch=master)](https://travis-ci.org/otaviotech/sd2)
 
 ## Documentação das rotas
 [Insomnia](https://insomnia.rest/) collection. `insomnia_api_docs.json`
